@@ -1,24 +1,25 @@
 mod lmsr;
 mod cpmm;
+mod ablmsr;
 
 fn main() {
-    // Using LMSR
-    let mut market = lmsr::LMSR::new(10.0, 3);
-    println!("Initial LMSR cost: {}", market.cost());
+    // Adaptive Bounded LMSR
+    let mut market = ablmsr::ABLMSR::new(10.0, 5.0, 20.0, 3, 0.1); // Initial b=10, b_min=5, b_max=20, 3 outcomes
 
+    println!("Initial ABLMSR cost: {}", market.cost());
+    println!("Initial b: {}", market.b);
+
+    println!("Buying shares in outcome 1...");
     market.buy(1, 5.0);
-    println!("Updated LMSR cost: {}", market.cost());
-    println!("LMSR price of outcome 1: {}", market.price(1));
 
-    // Using CPMM
-    let mut pool = cpmm::CPMM::new(100.0, 200.0); // 100 X and 200 Y
-    println!("Initial CPMM price of X: {}", pool.price_x());
+    println!("Updated ABLMSR cost: {}", market.cost());
+    println!("Updated b: {}", market.b);
+    println!("Price of outcome 1: {}", market.price(1));
 
-    let delta_y = pool.swap_x_for_y(10.0); // Swap 10 X for Y
-    println!("Swapped 10 X for {} Y", delta_y);
-    println!("Updated CPMM price of X: {}", pool.price_x());
+    println!("Buying shares in outcome 2...");
+    market.buy(2, 10.0);
 
-    let delta_x = pool.swap_y_for_x(20.0); // Swap 20 Y for X
-    println!("Swapped 20 Y for {} X", delta_x);
-    println!("Updated CPMM price of X: {}", pool.price_x());
+    println!("Updated ABLMSR cost: {}", market.cost());
+    println!("Updated b: {}", market.b);
+    println!("Price of outcome 2: {}", market.price(2));
 }
